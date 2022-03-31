@@ -196,7 +196,7 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.this[0].id
   }
   dynamic "route" {
-    for_each = try(var.common_route_table_routes, var.public_route_table_routes)
+    for_each = var.common_route_table_routes == null ? var.public_route_table_routes : var.common_route_table_routes
     content {
       # One of the following destinations must be provided
       cidr_block      = route.value.cidr_block
@@ -257,7 +257,7 @@ resource "aws_route_table" "private" {
   }
   
   dynamic "route" {
-    for_each = try(var.common_route_table_routes, var.private_route_table_routes)
+    for_each = var.common_route_table_routes == null ? var.private_route_table_routes : var.common_route_table_routes
     content {
       # One of the following destinations must be provided
       cidr_block      = route.value.cidr_block
