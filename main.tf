@@ -191,8 +191,12 @@ resource "aws_route_table" "public" {
 
   vpc_id = local.vpc_id
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.this[0].id
+  }
   dynamic "route" {
-    for_each = var.public_route_table_routes
+    for_each = try(var.common_route_table_routes, var.public_route_table_routes)
     content {
       # One of the following destinations must be provided
       cidr_block      = route.value.cidr_block
@@ -247,8 +251,13 @@ resource "aws_route_table" "private" {
 
   vpc_id = local.vpc_id
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = element(aws_nat_gateway.this[*].id, count.index)
+  }
+  
   dynamic "route" {
-    for_each = var.private_route_table_routes
+    for_each = try(var.common_route_table_routes, var.private_route_table_routes)
     content {
       # One of the following destinations must be provided
       cidr_block      = route.value.cidr_block
