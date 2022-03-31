@@ -433,7 +433,7 @@ variable "private_route_table_routes" {
 variable "common_route_table_routes" {
   description = "Configuration block of routes. See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table#route"
   type        = list(map(string))
-  default     = []
+  default     = null
 }
 
 variable "tags" {
